@@ -5,12 +5,6 @@ const rl = require("readline").createInterface({
 });
 
 let missoes = [];
-// let missao = {
-//   Nome: nome,
-//   Destino: destino,
-//   Prioridade: prioridade,
-//   tripulante : [],
-// };
 
 function exibirMenu() {
   console.log(
@@ -35,7 +29,6 @@ function exibirMenu() {
         filtrarPrioridade();
         break;
       case 6:
-        console.clear();
         rankingDestinos();
         break;
       case 7:
