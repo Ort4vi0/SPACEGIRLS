@@ -110,21 +110,33 @@ function adicionarMissao() {
 function filtrarPrioridade() {
   console.clear();
   console.log(
-    "Filtre as missões por prioridade\nAs PRIORIDADES vão de 1 a 5, com importância crescente."
+    "Filtre as missões por prioridade\nAs PRIORIDADES vão de 1 a 5, com importância crescente.\n"
   );
   rl.question("Digite a prioridade desejada: ", (filtro) => {
-    const busca = missoes.filter((missoes) => missoes.prioridade == filtro);
-    if (missoes.length <= 0) {
+    filtro = parseInt(filtro,10)
+    if(isNaN(filtro) || filtro < 1 || filtro > 5){
+        console.log("Prioridade inválida.\nDigite um número de 1 a 5, por favor.")
+        filtrarPrioridade();
+        return;
+    }
+    if (missoes.length == 0) {
       console.log("Não há missões no momento. Voltando ao menu.");
       exibirMenu();
-    } else {
-      console.log("======PRIORIDADES======");
-      missoes.forEach((missao, index) => {
-        console.log(`Nº da Missão: ${index + 1} || Prioridade: ${missao.prioridade} | Nome: ${missao.nome}  | Destino: ${missao.destino} | Tripulante: ${missao.tripulante}`
+      return;
+    }
+    const missoesFiltradas = missoes.filter((missao) => missao.Prioridade === filtro);
+    if (missoesFiltradas.length > 0){
+      console.clear()
+      console.log(`======-MISSÕES COM PRIORIDADE ${filtro}-======`);
+      missoesFiltradas.forEach((missao, index) => {
+        console.log(`Nº da Missão: ${index + 1} || Prioridade: ${missao.Prioridade} | Nome: ${missao.Nome}  | Destino: ${missao.Destino} | Tripulante: ${missao.tripulantes}`
         );
       });
-      exibirMenu();
+    } else {
+        console.clear()
+        console.log("Nenhuma missão com a prioridade " + filtro + " encontrada.")
     }
+    exibirMenu()
   });
 }
 
