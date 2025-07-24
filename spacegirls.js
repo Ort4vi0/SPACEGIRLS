@@ -62,6 +62,7 @@ function adicionarMissao() {
   });
 }
 
+
 function adicionarTripulante(nome, destino, prioridade, tripulantesAtuais) {
     console.clear()
   rl.question(
