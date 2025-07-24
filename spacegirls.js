@@ -289,5 +289,54 @@ function rankingDestinos(resultadoContagem){
     exibirMenu()
 }         
 
+function listarMissoes() {
+  console.clear()
+  console.log(`==== MISSOES ATUAIS: ${missoes.length} ===`)
+  if (missoes.length == 0){
+    console.log("Não há missoes para serem feitas")
+    rl.question("Pressione ENTER para retorar ao menu", exibirMenu)
+  } else {
+    ListarosBagui();
+    rl.question("Pressione ENTER para retornar ao MENU", exibirMenu)
+  }
+}
+
+function ListarosBagui(){
+  missoes.forEach((missao, index ) => {
+      console.log(`Missão numero: ${index + 1} | Nivel de Prioridade: ${missao.Prioridade} | Nome da Missão: ${missao.Nome} | Destino: ${missao.Destino} | Tripulantes: ${missao.tripulantes}\n`);
+    });
+}
+
+function ListarTripulantes(){
+  console.log("Nome de todos os Tripulantes Totais das Missoes: ")
+  missoes.forEach((missao, index ) => {
+    index + 1;
+    console.log(`${missao.tripulantes}`);
+  });
+  console.log("-".repeat(20))
+}
+
+function listarPorTripulantes(){
+  console.clear();
+  ListarTripulantes();
+  rl.question("Qual o nome do Tripulante que deseja listar suas missoes?: ", (filtro) => {
+    const filtroLowerCase = filtro.trim().toLowerCase();
+    const missoesFiltradas = missoes.filter(missao =>
+      missao.tripulantes.some(tripulante => tripulante.includes(filtroLowerCase))
+    );
+
+    if (missoesFiltradas.length > 0) {
+      console.log(`\n=== Missões do Tripulante: ${filtro.charAt(0).toUpperCase() + filtro.slice(1)} ===`);
+      missoesFiltradas.forEach((missao, index) => {
+        console.log(`Missão numero: ${index + 1} | Nivel de Prioridade: ${missao.Prioridade} | Nome da Missão: ${missao.Nome} | Destino: ${missao.Destino} | Tripulantes: ${missao.tripulantes.join(', ')}\n`);
+      });
+    } else {
+      console.log(`Nenhuma missão encontrada para o tripulante "${filtro}".`);
+    }
+    console.log("\nPressione Enter para voltar ao menu");
+    rl.question("", exibirMenu);
+  });
+}
+
 exibirMenu();
 
