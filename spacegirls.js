@@ -107,7 +107,7 @@ function listarMissoes() {
   });
 }
 
-exibirMenu()
+exibirMenu();
 
 function editarMissao() {
   console.clear();
@@ -121,103 +121,127 @@ function editarMissao() {
 
   missoes.forEach((missao, index) => {
     console.log(
-      `ID: ${index + 1} | Nome: ${missao.Nome} | Prioridade: ${missao.Prioridade} | Destino: ${missao.Destino}`
+      `ID: ${index + 1} | Nome: ${missao.Nome} | Prioridade: ${
+        missao.Prioridade
+      } | Destino: ${missao.Destino}`
     );
 
-    if (missao.tripulantes && Array.isArray(missao.tripulantes) && missao.tripulantes.length > 0) {
-      console.log('  --- Tripulante(s) desta missão ---');
+    if (
+      missao.tripulantes &&
+      Array.isArray(missao.tripulantes) &&
+      missao.tripulantes.length > 0
+    ) {
+      console.log("  --- Tripulante(s) desta missão ---");
       missao.tripulantes.forEach((tripulante) => {
         console.log(`  - ${tripulante}`);
       });
     } else {
-      console.log('  Nenhum tripulante atribuído a esta missão.');
+      console.log("  Nenhum tripulante atribuído a esta missão.");
     }
-    console.log('------------------------------------');
+    console.log("------------------------------------");
   });
 
-  rl.question('Qual missão você deseja editar? Digite o ID: ', (idMissaoInput) => {
-    const idMissao = parseInt(idMissaoInput);
+  rl.question(
+    "Qual missão você deseja editar? Digite o ID: ",
+    (idMissaoInput) => {
+      const idMissao = parseInt(idMissaoInput);
 
-    if (isNaN(idMissao) || idMissao < 1 || idMissao > missoes.length) {
-      console.clear();
-      console.log("ID de missão inválido. Por favor, digite um ID existente.");
-      exibirMenu();
-      return;
-    }
-
-    const indexMissao = idMissao - 1;
-    const missaoParaEditar = missoes[indexMissao];
-
-    rl.question(`(Atual: ${missaoParaEditar.Nome}) Digite o NOVO nome da missão (ou deixe em branco): `, (novoNome) => {
-      if (novoNome !== '') {
-        missaoParaEditar.Nome = novoNome;
+      if (isNaN(idMissao) || idMissao < 1 || idMissao > missoes.length) {
+        console.clear();
+        console.log(
+          "ID de missão inválido. Por favor, digite um ID existente."
+        );
+        exibirMenu();
+        return;
       }
 
-      rl.question(`(Atual: ${missaoParaEditar.Destino}) Digite o NOVO destino da missão (ou deixe em branco): `, (novoDestino) => {
-        if (novoDestino !== '') {
-          missaoParaEditar.Destino = novoDestino;
-        }
+      const indexMissao = idMissao - 1;
+      const missaoParaEditar = missoes[indexMissao];
 
-        solicitarNovaPrioridade()
+      rl.question(
+        `(Atual: ${missaoParaEditar.Nome}) Digite o NOVO nome da missão (ou deixe em branco): `,
+        (novoNome) => {
+          if (novoNome !== "") {
+            missaoParaEditar.Nome = novoNome;
+          }
 
-        function solicitarNovaPrioridade() {
           rl.question(
-            `(Atual: ${missaoParaEditar.Prioridade}) Digite a NOVA prioridade da missão (1 a 5, ou deixe em branco): `,
-            (novaPrioridadeInput) => {
-              if (novaPrioridadeInput === '') {
-                solicitarNovosTripulantes();
+            `(Atual: ${missaoParaEditar.Destino}) Digite o NOVO destino da missão (ou deixe em branco): `,
+            (novoDestino) => {
+              if (novoDestino !== "") {
+                missaoParaEditar.Destino = novoDestino;
               }
 
-              const parsedPrioridade = parseInt(novaPrioridadeInput);
-              if (isNaN(parsedPrioridade) || parsedPrioridade < 1 || parsedPrioridade > 5) {
-                console.clear();
-                console.log("Prioridade inválida.");
-                solicitarNovaPrioridade();
-              } else {
-                missaoParaEditar.Prioridade = parsedPrioridade;
-                solicitarNovosTripulantes();
+              solicitarNovaPrioridade();
+
+              function solicitarNovaPrioridade() {
+                rl.question(
+                  `(Atual: ${missaoParaEditar.Prioridade}) Digite a NOVA prioridade da missão (1 a 5, ou deixe em branco): `,
+                  (novaPrioridadeInput) => {
+                    if (novaPrioridadeInput === "") {
+                      solicitarNovosTripulantes();
+                    }
+
+                    const parsedPrioridade = parseInt(novaPrioridadeInput);
+                    if (
+                      isNaN(parsedPrioridade) ||
+                      parsedPrioridade < 1 ||
+                      parsedPrioridade > 5
+                    ) {
+                      console.clear();
+                      console.log("Prioridade inválida.");
+                      solicitarNovaPrioridade();
+                    } else {
+                      missaoParaEditar.Prioridade = parsedPrioridade;
+                      solicitarNovosTripulantes();
+                    }
+                  }
+                );
+              }
+
+              function solicitarNovosTripulantes() {
+                rl.question(
+                  "Deseja adicionar novos tripulantes a esta missão? (s/n): ",
+                  (respostaAddTripulante) => {
+                    if (respostaAddTripulante.toLowerCase() === "s") {
+                      adicionarTripulanteNaEdicao();
+                    } else {
+                      console.clear();
+                      console.log("=== Missão editada===");
+                      exibirMenu();
+                    }
+                  }
+                );
+              }
+
+              function adicionarTripulanteNaEdicao() {
+                rl.question(
+                  `Insira o nome do tripulante que deseja adicionar à missão "${missaoParaEditar.Nome}": `,
+                  (nomeTripulante) => {
+                    missaoParaEditar.tripulantes.push(nomeTripulante);
+                    console.log(`"${nomeTripulante}" adicionado à missão.`);
+                    rl.question(
+                      "Deseja adicionar outro tripulante a esta missão? (s/n): ",
+                      (continuarAdicionar) => {
+                        if (continuarAdicionar.toLowerCase() === "s") {
+                          console.clear();
+                          adicionarTripulanteNaEdicao();
+                        } else {
+                          console.clear();
+                          console.log("=== Missão editada===");
+                          exibirMenu();
+                        }
+                      }
+                    );
+                  }
+                );
               }
             }
           );
         }
-
-        function solicitarNovosTripulantes() {
-          rl.question(
-            "Deseja adicionar novos tripulantes a esta missão? (s/n): ",
-            (respostaAddTripulante) => {
-              if (respostaAddTripulante.toLowerCase() === 's') {
-                adicionarTripulanteNaEdicao();
-              } else {
-                console.clear();
-                console.log("=== Missão editada===");
-                exibirMenu();
-              }
-            }
-          );
-        }
-
-        function adicionarTripulanteNaEdicao() {
-          rl.question(`Insira o nome do tripulante que deseja adicionar à missão "${missaoParaEditar.Nome}": `, (nomeTripulante) => {
-              missaoParaEditar.tripulantes.push(nomeTripulante);
-              console.log(`"${nomeTripulante}" adicionado à missão.`);
-            rl.question(
-              "Deseja adicionar outro tripulante a esta missão? (s/n): ",
-              (continuarAdicionar) => {
-                if (continuarAdicionar.toLowerCase() === 's') {
-                  console.clear();
-                  adicionarTripulanteNaEdicao();
-                } else {
-                  console.clear();
-                  console.log("=== Missão editada===");
-                  exibirMenu();
-                }
-              }
-            );
-          });
-        }
-      });
-    });
-  });
+      );
+    }
+  );
 }
 
 function filtrarPrioridade() {
@@ -226,30 +250,39 @@ function filtrarPrioridade() {
     "Filtre as missões por prioridade\nAs PRIORIDADES vão de 1 a 5, com importância crescente.\n"
   );
   rl.question("Digite a prioridade desejada: ", (filtro) => {
-    filtro = parseInt(filtro,10)
-    if(isNaN(filtro) || filtro < 1 || filtro > 5){
-        console.log("Prioridade inválida.\nDigite um número de 1 a 5, por favor.")
-        filtrarPrioridade();
-        return;
+    filtro = parseInt(filtro, 10);
+    if (isNaN(filtro) || filtro < 1 || filtro > 5) {
+      console.log(
+        "Prioridade inválida.\nDigite um número de 1 a 5, por favor."
+      );
+      filtrarPrioridade();
+      return;
     }
     if (missoes.length == 0) {
       console.log("Não há missões no momento. Voltando ao menu.");
       exibirMenu();
       return;
     }
-    const missoesFiltradas = missoes.filter((missao) => missao.Prioridade === filtro);
-    if (missoesFiltradas.length > 0){
-      console.clear()
+    const missoesFiltradas = missoes.filter(
+      (missao) => missao.Prioridade === filtro
+    );
+    if (missoesFiltradas.length > 0) {
+      console.clear();
       console.log(`======-MISSÕES COM PRIORIDADE ${filtro}-======`);
       missoesFiltradas.forEach((missao, index) => {
-        console.log(`Nº da Missão: ${index + 1} || Prioridade: ${missao.Prioridade} | Nome: ${missao.Nome}  | Destino: ${missao.Destino} | Tripulante: ${missao.tripulantes}`
+        console.log(
+          `Nº da Missão: ${index + 1} || Prioridade: ${
+            missao.Prioridade
+          } | Nome: ${missao.Nome}  | Destino: ${
+            missao.Destino
+          } | Tripulante: ${missao.tripulantes}`
         );
       });
     } else {
-        console.clear()
-        console.log("Nenhuma missão com a prioridade " + filtro + " encontrada.")
+      console.clear();
+      console.log("Nenhuma missão com a prioridade " + filtro + " encontrada.");
     }
-    exibirMenu()
+    exibirMenu();
   });
 }
 
