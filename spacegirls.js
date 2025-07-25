@@ -75,6 +75,7 @@ function adicionarMissao() {
     rl.question(
       `Insira o nome do tripulante que seja adicionar na missão "${nome}":\n`,
       (nomeTripulante) => {
+        nomeTripulante = nomeTripulante.toLowerCase();
         tripulantesAtuais.push(nomeTripulante);
         console.clear();
         console.log(`Tripulante '${nomeTripulante}' adicionado na missao "${nome}"`);
@@ -108,14 +109,6 @@ function adicionarMissao() {
       }
     );
   }
-  
-
-function listarMissoes() {
-  missoes.forEach((index, missao) => {
-    console.log(missoes);
-    exibirMenu();
-  });
-}
 
 function editarMissao() {
   console.clear();
@@ -303,7 +296,7 @@ function listarMissoes() {
 
 function ListarosBagui(){
   missoes.forEach((missao, index ) => {
-      console.log(`Missão numero: ${index + 1} | Nivel de Prioridade: ${missao.Prioridade} | Nome da Missão: ${missao.Nome} | Destino: ${missao.Destino} | Tripulantes: ${missao.tripulantes}\n`);
+      console.log(`Missão numero: ${index + 1} | Nivel de Prioridade: ${missao.Prioridade} | Nome da Missão: ${missao.Nome} | Destino: ${missao.Destino} | Tripulantes: ${missao.tripulantes} | Status: ${missao.concluida ? "CONCLUÍDA" : "PENDENTE"}\n`);
     });
 }
 
@@ -328,7 +321,8 @@ function listarPorTripulantes(){
     if (missoesFiltradas.length > 0) {
       console.log(`\n=== Missões do Tripulante: ${filtro.charAt(0).toUpperCase() + filtro.slice(1)} ===`);
       missoesFiltradas.forEach((missao, index) => {
-        console.log(`Missão numero: ${index + 1} | Nivel de Prioridade: ${missao.Prioridade} | Nome da Missão: ${missao.Nome} | Destino: ${missao.Destino} | Tripulantes: ${missao.tripulantes.join(', ')}\n`);
+        const status = missao.concluida ? "CONCLUÍDA" : "PENDENTE";
+        console.log(`Missão numero: ${index + 1} | Nivel de Prioridade: ${missao.Prioridade} | Nome da Missão: ${missao.Nome} | Destino: ${missao.Destino} | Tripulantes: ${missao.tripulantes.join(', ')} | Status: ${status}\n`);
       });
     } else {
       console.log(`Nenhuma missão encontrada para o tripulante "${filtro}".`);
@@ -338,5 +332,32 @@ function listarPorTripulantes(){
   });
 }
 
-exibirMenu();
+function marcarConcluido() {
+  console.clear();
+  console.log("====== MARCAR MISSÃO COMO CONCLUÍDA ======");
+  if (missoes.length === 0) {
+    console.log("Não há missoes a serem concluídas");
+    exibirMenu();
+  }
+  missoes.forEach((missao, index) => {
+    const status = missao.concluida ? "CONCLUÍDA" : "PENDENTE";
+    console.log(
+      `ID: ${index + 1} | Nome: ${missao.Nome} | Status: ${status}`
+    );
+  });
+  rl.question("Digite o ID da missão que deseja marcar como concluído: ", (idMissaoInput) => {
+    const idMissao = parseInt(idMissaoInput);
+    if (isNaN(idMissao) || idMissao < 1 || idMissao > missoes.length) {
+      console.clear();
+      console.log("O ID inserido não existe, te deixo tentar denovo!");
+      exibirMenu();
+    }
+    const indexMissao = idMissao - 1;
+    missoes[indexMissao].concluida = true;
+    console.clear();
+    console.log(`A missão "${missoes[indexMissao].Nome}" foi marcada como CONCLUÍDA.`);
+    exibirMenu();
+  });
+}
 
+exibirMenu();
